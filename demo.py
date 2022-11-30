@@ -66,31 +66,31 @@ if table_name:
             "Sorry! Something went wrong with your query, please try again."
         )
 
-# "## Query customers"
-#
-# sql_customer_names = "SELECT name FROM customers;"
-# try:
-#     customer_names = query_db(sql_customer_names)["name"].tolist()
-#     customer_name = st.selectbox("Choose a customer", customer_names)
-# except:
-#     st.write("Sorry! Something went wrong with your query, please try again.")
-#
-# if customer_name:
-#     sql_customer = f"SELECT * FROM customers WHERE name = '{customer_name}';"
-#     try:
-#         customer_info = query_db(sql_customer).loc[0]
-#         c_age, c_city, c_state = (
-#             customer_info["age"],
-#             customer_info["city"],
-#             customer_info["state"],
-#         )
-#         st.write(
-#             f"{customer_name} is {c_age}-year old, and lives in {c_city}, {c_state}."
-#         )
-#     except:
-#         st.write(
-#             "Sorry! Something went wrong with your query, please try again."
-#         )
+"## Query Students"
+
+sql_student_names = "SELECT name FROM student;"
+try:
+    student_names = query_db(sql_student_names)["name"].tolist()
+    student_name = st.selectbox("Choose a student", student_names)
+except:
+    st.write("Sorry! Something went wrong with your query, please try again.")
+
+if student_name:
+    sql_student = f"SELECT * FROM student WHERE name = '{student_name}';"
+    try:
+        student_info = query_db(sql_student).loc[0]
+        c_age, c_city, c_state = (
+            student_info["ssn"],
+            student_info["year"],
+            student_info["major"],
+        )
+        st.write(
+            f"{student_name} is a {year} of {major} whose ssn is {ssn}."
+        )
+    except:
+        st.write(
+            "Sorry! Something went wrong with your query, please try again."
+        )
 #
 # "## Query orders"
 #
