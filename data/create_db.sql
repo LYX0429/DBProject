@@ -60,7 +60,6 @@ create table Course(
         term varchar(32) not null,
         professor_ssn integer not null,
         major varchar(32) not null,
-		grade varchar(32),
         primary key (course_number, section, term),
         foreign key (professor_ssn) references Professor(ssn),
         foreign key (major) references Major(name)
@@ -71,6 +70,7 @@ create table course_students(
         course_number integer not null,
         section varchar(32) not null,
         term varchar(32) not null,
+        grade interger,
         primary key (student_ssn, course_number, section, term),
         foreign key (student_ssn) references Student(ssn),
         foreign key (course_number, section, term) references Course(course_number, section, term)
@@ -81,6 +81,7 @@ create table course_non_students(
         course_number integer not null,
         section varchar(32) not null,
         term varchar(32) not null,
+        grade interger,
         primary key (student_ssn, course_number, section, term),
         foreign key (student_ssn) references Non_diploma_student(ssn),
         foreign key (course_number, section, term) references Course(course_number, section, term)
