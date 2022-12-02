@@ -60,6 +60,7 @@ create table Course(
         term varchar(32) not null,
         professor_ssn integer not null,
         major varchar(32) not null,
+		grade varchar(32),
         primary key (course_number, section, term),
         foreign key (professor_ssn) references Professor(ssn),
         foreign key (major) references Major(name)

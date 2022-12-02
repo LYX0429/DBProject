@@ -1,6 +1,6 @@
-course_number	course_name	section	term	professor_ssn	major
-6001	database	A	FALL 2022	000017	CS
-6002	algorithm	A	FALL 2022	000017	CE
-6003	cloud computing	A	SPRING 2021	000021	CS
-6004	artificial intelligence	C	FALL 2022	000021	EE
-6005	intro to java	A	SPRING 2022	000021	MATH
+"course_number	course_name	section	term	professor_ssn	major"
+"6001	database	A	FALL 2022	000017	CS"
+"6002	algorithm	A	FALL 2022	000017	CE"
+"6003	cloud computing	A	SPRING 2021	000020	CS"
+"6004	artificial intelligence	C	FALL 2022	000020	EE"
+"6005	intro to java	A	SPRING 2022	000020	MATH"
