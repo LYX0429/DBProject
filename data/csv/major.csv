@@ -1,6 +1,6 @@
-name,school
-CS,ENGINEER
-CE,ENGINEER
-EE,MATH
-MATH,MATH
-ART,ART
+id,name,school
+1,CS,1
+2,CE,1
+3,EE,3
+4,MATH,3
+5,ART,2

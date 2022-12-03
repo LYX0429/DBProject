@@ -10,13 +10,15 @@ Drop table Student_Work;
 Drop table Degree;
 
 create table Degree(
-        level varchar(32) not null,
-        type varchar(32) not null,
-        primary key (level, type)
+        id integer primary key,
+        name varchar(32),
+        level varchar(32),
+        type varchar(32)
 );
 
 create table Student_Work(
-        position varchar(32) primary key,
+        id integer primary key,
+        position varchar(32),
         type varchar(32),
         location varchar(32)
 );
@@ -25,77 +27,74 @@ create table Professor (
         ssn integer primary key,
         name varchar(32) not null,
         dob date,
-        highest_degree_level varchar(32),
-        highest_degree_type varchar(32),
-        foreign key (highest_degree_level, highest_degree_type) references Degree(level, type)
+        degree_id integer,
+        foreign key (degree_id) references Degree(id)
 );
 
 create table School(
-        name varchar(32) primary key,
-        dean_ssn integer unique,
+        id integer primary key,
+        name varchar(32) not null,
+        dean_ssn integer unique not null,
         foreign key (dean_ssn) references Professor(ssn)
 );
 
 create table Major(
-        name varchar(32) primary key,
-        school varchar(32) not null,
-        foreign key (school) references School(name)
+        id integer primary key,
+        name varchar(32) not null,
+        school_id integer not null,
+        foreign key (school_id) references School(id)
 );
 
 create table Student(
         ssn integer primary key,
-        name varchar(32) not null,
+        name varchar(64) not null,
         year integer not null,
         dob date,
         graduated bool,
-        major varchar(32),
-        degree_level varchar(32) not null,
-        degree_type varchar(32) not null,
-        work varchar(32),
-        foreign key (major) references Major(name),
-        foreign key (degree_level, degree_type) references Degree(level, type),
-        foreign key (work) references Student_Work(position)
+        major_id integer not null,
+        degree_id integer not null,
+        work_id integer,
+        foreign key (major_id) references Major(id),
+        foreign key (degree_id) references Degree(id),
+        foreign key (work_id) references Student_Work(id)
 );
 
 create table Non_diploma_student(
         ssn integer primary key,
-        name varchar(32) not null,
-        work varchar(32),
-        foreign key (work) references Student_Work(position)
+        name varchar(64) not null,
+        work_id integer,
+        foreign key (work_id) references Student_Work(id)
 );
 
 create table Course(
-        course_number integer,
+        id integer primary key,
+        course_number integer not null,
         course_name varchar(32) not null,
         section varchar(32) not null,
         term varchar(32) not null,
+        year varchar(32) not null,
         professor_ssn integer not null,
-        major varchar(32) not null,
-        primary key (course_number, section, term),
+        major_id integer not null,
         foreign key (professor_ssn) references Professor(ssn),
-        foreign key (major) references Major(name)
+        foreign key (major_id) references Major(id)
 );
 
 create table course_students(
         student_ssn integer not null,
-        course_number integer not null,
-        section varchar(32) not null,
-        term varchar(32) not null,
+        course_id integer not null,
         grade integer,
-        primary key (student_ssn, course_number, section, term),
+        primary key (student_ssn, course_id),
         foreign key (student_ssn) references Student(ssn),
-        foreign key (course_number, section, term) references Course(course_number, section, term)
+        foreign key (course_id) references Course(id)
 );
 
 create table course_non_students(
         student_ssn integer not null,
-        course_number integer not null,
-        section varchar(32) not null,
-        term varchar(32) not null,
+        course_id integer not null,
         grade integer,
-        primary key (student_ssn, course_number, section, term),
+        primary key (student_ssn, course_id),
         foreign key (student_ssn) references Non_diploma_student(ssn),
-        foreign key (course_number, section, term) references Course(course_number, section, term)
+        foreign key (course_id) references Course(id)
 );
 
 COPY Degree
