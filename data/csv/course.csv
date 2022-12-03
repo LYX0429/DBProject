@@ -1,6 +1,6 @@
-id,course_number,course_name,section,term,year,professor_ssn,major_id
-1,6001,database,A,FALL,2022,000017,1
-2,6002,algorithm,A,FALL,2022,000017,2
-3,6003,cloud computing,A,SPRING,2021,000020,1
-4,6004,artificial intelligence,C,FALL,2022,000020,3
-5,6005,intro to java,A,SPRING,2022,000020,4
+id,course_number,course_name,section,term,year,credits,professor_ssn,major_id
+1,6001,database,A,FALL,2022,3,000017,1
+2,6002,algorithm,A,FALL,2022,3,000017,2
+3,6003,cloud computing,A,SPRING,2021,3,000020,1
+4,6004,artificial intelligence,C,FALL,2022,3,000020,3
+5,6005,intro to java,A,SPRING,2022,3,000020,4

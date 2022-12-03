@@ -3,7 +3,7 @@ import psycopg2
 import streamlit as st
 from configparser import ConfigParser
 
-"# Demo: Streamlit + Postgres"
+"# DB Project"
 
 
 @st.cache
@@ -66,31 +66,115 @@ if table_name:
             "Sorry! Something went wrong with your query, please try again."
         )
 
-"## Query Students"
+"## Courses Information"
 
-sql_student_names = "SELECT name FROM student;"
+sql = f"""
+    SELECT concat(concat(concat(concat(M.id, ' '), S.name), ' '), M.name) as id
+    FROM Major M, School S
+    WHERE M.school_id = S.id
+    ORDER BY M.id ASC;"""
 try:
-    student_names = query_db(sql_student_names)["name"].tolist()
-    student_name = st.selectbox("Choose a student", student_names)
+    majors = query_db(sql)["id"].tolist()
+    major_chosen = st.selectbox("Choose a major", majors).split(" ")[0]
 except:
     st.write("Sorry! Something went wrong with your query, please try again.")
 
-if student_name:
-    sql_student = f"SELECT * FROM student WHERE name = '{student_name}';"
+if major_chosen:
+    course_number_input = st.text_input("Enter course number")
+    if course_number_input:
+        try:
+            sql = f"""
+                SELECT C.id, C.course_number, C.course_name, C.section, C.term, C.year, P.name AS professor, M.name AS major
+                FROM course C, professor P, Major M
+                WHERE C.course_number = '{course_number_input}' 
+                AND C.major_id = '{major_chosen}'
+                AND M.id = C.major_id
+                AND P.ssn = C.professor_ssn
+                ORDER BY C.id ASC;"""
+            result_1 = query_db(sql)
+            st.dataframe(result_1)
+        except:
+            st.write("Sorry! Something went wrong with your query, please try again.")
+
+"## Get students whose grade above X in a specific course"
+
+id_or_number = st.selectbox("Choose searching method", ("Course ID", "Course Number"))
+method = 0
+if id_or_number == "Course ID":
+    method = 0
+else:
+    method = 1
+course_id_input = st.text_input("Enter course information")
+grade_input = st.text_input("Enter grade filter", '90')
+grade_trigger= True
+try:
+    grade_input = int(grade_input)
+    grade_trigger = True
+except:
+    st.write("Please enter 0~100.")
+    grade_trigger = False
+
+if course_id_input and grade_trigger:
     try:
-        student_info = query_db(sql_student).loc[0]
-        c_age, c_city, c_state = (
-            student_info["ssn"],
-            student_info["year"],
-            student_info["major"],
-        )
-        st.write(
-            f"{student_name} is a {year} of {major} whose ssn is {ssn}."
-        )
+        if method == 0:
+            sql = f"""
+                SELECT S.ssn, S.name, CS.grade, C.id as course_id, C.course_number as course_number, C.section, 
+                C.term, C.year
+                FROM Student S, course_students CS, Course C
+                WHERE S.ssn = CS.student_ssn
+                AND C.id = CS.course_id
+                AND C.id = '{course_id_input}' 
+                AND CS.grade >= {grade_input}
+                UNION 
+                SELECT S.ssn, S.name, CS.grade, C.id as course_id, C.course_number as course_number, C.section, 
+                C.term, C.year
+                FROM Non_diploma_student S, course_students CS, Course C
+                WHERE S.ssn = CS.student_ssn
+                AND C.id = CS.course_id
+                AND C.id = '{course_id_input}' 
+                AND CS.grade >= {grade_input}
+                ORDER BY grade DESC, ssn ASC;"""
+        elif method == 1:
+            sql = f"""
+                SELECT S.ssn, S.name, CS.grade, C.id as course_id, C.course_number as course_number, C.section, 
+                C.term, C.year
+                FROM Student S, course_students CS, Course C
+                WHERE S.ssn = CS.student_ssn
+                AND C.id = CS.course_id
+                AND C.course_number = '{course_id_input}' 
+                AND CS.grade >= {grade_input}
+                UNION 
+                SELECT S.ssn, S.name, CS.grade, C.id as course_id, C.course_number as course_number, C.section, 
+                C.term, C.year
+                FROM Non_diploma_student S, course_students CS, Course C
+                WHERE S.ssn = CS.student_ssn
+                AND C.id = CS.course_id
+                AND C.course_number = '{course_id_input}' 
+                AND CS.grade >= {grade_input}
+                ORDER BY grade DESC, ssn ASC;"""
+        result_2 = query_db(sql)
+        st.dataframe(result_2)
     except:
-        st.write(
-            "Sorry! Something went wrong with your query, please try again."
-        )
+        st.write("Sorry! Something went wrong with your query, please try again.")
+
+"## Get students total credits in specific term"
+
+student_name_input = st.text_input("Enter student name")
+if student_name_input:
+    try:
+        sql = f"""
+            SELECT S.ssn, S.name, sum(C.credits) credits
+            FROM Student S, course_students CS, Course C
+            WHERE S.ssn = CS.student_ssn
+            AND C.id = CS.course_id
+            AND S.name LIKE '%{student_name_input}%'
+            GROUP BY S.ssn
+            ORDER BY S.ssn ASC, S.name ASC; """
+        result_3 = query_db(sql)
+        st.dataframe(result_3)
+    except:
+        st.write("Sorry! Something went wrong with your query, please try again.")
+
 #
 # "## Query orders"
 #

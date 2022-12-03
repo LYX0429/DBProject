@@ -73,6 +73,7 @@ create table Course(
         section varchar(32) not null,
         term varchar(32) not null,
         year varchar(32) not null,
+        credits integer not null,
         professor_ssn integer not null,
         major_id integer not null,
         foreign key (professor_ssn) references Professor(ssn),
