@@ -69,7 +69,7 @@ if table_name:
 "## Courses Information"
 
 sql = f"""
-    SELECT concat(concat(concat(concat(M.id, ' '), S.name), ' '), M.name) as id
+    SELECT concat(concat(concat(concat(M.id, ', '), M.name), ', '), S.name) as id
     FROM Major M, School S
     WHERE M.school_id = S.id
     ORDER BY M.id ASC;"""
@@ -167,7 +167,7 @@ if student_name_input:
             FROM Student S, course_students CS, Course C
             WHERE S.ssn = CS.student_ssn
             AND C.id = CS.course_id
-            AND S.name LIKE '%{student_name_input}%'
+            AND S.name LIKE UPPER('%{student_name_input}%')
             GROUP BY S.ssn
             ORDER BY S.ssn ASC, S.name ASC; """
         result_3 = query_db(sql)
