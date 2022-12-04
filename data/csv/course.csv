@@ -1,6 +1,22 @@
 id,course_number,course_name,section,term,year,credits,professor_ssn,major_id
-1,6001,database,A,FALL,2022,3,000017,1
-2,6002,algorithm,A,FALL,2022,3,000017,2
-3,6003,cloud computing,A,SPRING,2021,3,000020,1
-4,6004,artificial intelligence,C,FALL,2022,3,000020,3
-5,6005,intro to java,A,SPRING,2022,3,000020,4
+1,6001,Principle of Database,A,FALL,2022,3,17,1
+2,6001,Principle of Database,B,FALL,2022,3,15,1
+3,6001,Principle of Database,C,FALL,2022,3,11,9
+4,6001,Principle of Database,A,FALL,2022,3,11,4
+5,6002,Design and Analysis of Algorithms I,A,FALL,2022,3,14,1
+6,6002,Design and Analysis of Algorithms I,B,FALL,2022,3,12,1
+7,6002,Design and Analysis of Algorithms I,A,SPRING,2022,3,13,2
+8,6002,Design and Analysis of Algorithms I,B,SPRING,2022,3,12,2
+9,6002,Design and Analysis of Algorithms I,A,FALL,2021,3,13,4
+10,6003,Cloud Computing,A,SPRING,2021,3,20,1
+11,6003,Cloud Computing,B,SPRING,2022,3,20,1
+12,6003,Cloud Computing,A,FALL,2020,3,19,1
+13,6003,Cloud Computing,B,FALL,2020,3,20,8
+14,6004,Artificial Intelligence,C,FALL,2022,3,20,3
+15,6004,Artificial Intelligence,A,FALL,2022,3,18,3
+16,6004,Artificial Intelligence,A,SPRING,2020,3,18,3
+17,6005,Intro to Java,A,SPRING,2022,3,20,4
+18,6005,Intro to Java,A,FALL,2020,3,20,8
+19,3223,Intro to Art History,A,SPRING,2022,4,16,6
+20,3223,Intro to Art History,A,FALL,2021,4,16,6
+21,3223,Intro to Art History,A,SPRING,2021,4,16,10

@@ -1,6 +1,6 @@
-多加学生，20个左右
-场景1：加几个 同course_number, 同major, 不同section或不同term, year 的course 并加几个学生记录进去
-场景2：加几个 同course_number, 不同major, 不同 course_name 的课， 这个不用管学生
-场景3：加几个不同School的相同Major，比如CS，MATH，然后把专业名写全，不用缩写
+- DONE, 多加学生，20个左右 
+- DONE, 场景1：加几个 同course_number, 同major, 不同section或不同term, year 的course 并加几个学生记录进去
+- DONE, 场景2：加几个 同course_number, 不同major, 不同 course_name 的课， 这个不用管学生
+- DONE, 场景3：加几个不同School的相同Major，比如CS，MATH，然后把专业名写全，不用缩写
 场景4：给Courant和Tandon都加个Computer Science的Major然后加点course_number一样，但是不同course_name的课
 （这个不用改）你GROUP BY写错了

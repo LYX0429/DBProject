@@ -1,6 +1,11 @@
 id,name,school
-1,CS,1
-2,CE,1
-3,EE,3
-4,MATH,3
-5,ART,2
+1,ComputerScience,1
+2,ComputerEngineering,1
+3,ElectricalEngineering,1
+4,ComputerScience,3
+5,Math,3
+6,Art,2
+7,Communication,2
+8,DataScience,3
+9,MachineLearning,3
+10,AncientGreeceHistory,2
