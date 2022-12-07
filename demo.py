@@ -75,26 +75,28 @@ sql = f"""
     ORDER BY M.id ASC;"""
 try:
     majors = query_db(sql)["id"].tolist()
-    major_chosen = st.selectbox("Choose a major", majors).split(" ")[0]
+    major_chosen = st.selectbox("Choose a major", majors).split(", ")[0]
 except:
     st.write("Sorry! Something went wrong with your query, please try again.")
 
 if major_chosen:
     course_number_input = st.text_input("Enter course number")
     if course_number_input:
-        try:
-            sql = f"""
-                SELECT C.id, C.course_number, C.course_name, C.section, C.term, C.year, P.name AS professor, M.name AS major
-                FROM course C, professor P, Major M
-                WHERE C.course_number = '{course_number_input}' 
-                AND C.major_id = '{major_chosen}'
-                AND M.id = C.major_id
-                AND P.ssn = C.professor_ssn
-                ORDER BY C.id ASC;"""
-            result_1 = query_db(sql)
-            st.dataframe(result_1)
-        except:
-            st.write("Sorry! Something went wrong with your query, please try again.")
+        # try:
+        sql = f"""
+            SELECT C.id, C.course_number, C.course_name, C.section, C.term, C.year, P.name AS professor, M.name AS major
+            , Count(CS.student_ssn) as num_of_students
+            FROM  professor P, Major M, course C LEFT OUTER JOIN course_students CS on C.id = CS.course_id
+            WHERE C.course_number = '{course_number_input}' 
+            AND C.major_id = '{major_chosen}'
+            AND M.id = C.major_id
+            AND P.ssn = C.professor_ssn
+            GROUP BY (C.id, C.course_number, C.course_name, C.section, C.term, C.year, P.name, M.name)
+            ORDER BY id ASC;"""
+        result_1 = query_db(sql)
+        st.dataframe(result_1)
+        # except:
+        #     st.write("Sorry! Something went wrong with your query, please try again.")
 
 "## Get students whose grade above X in a specific course"
 
@@ -125,28 +127,12 @@ if course_id_input and grade_trigger:
                 AND C.id = CS.course_id
                 AND C.id = '{course_id_input}' 
                 AND CS.grade >= {grade_input}
-                UNION 
-                SELECT S.ssn, S.name, CS.grade, C.id as course_id, C.course_number as course_number, C.section, 
-                C.term, C.year
-                FROM Non_diploma_student S, course_students CS, Course C
-                WHERE S.ssn = CS.student_ssn
-                AND C.id = CS.course_id
-                AND C.id = '{course_id_input}' 
-                AND CS.grade >= {grade_input}
                 ORDER BY grade DESC, ssn ASC;"""
         elif method == 1:
             sql = f"""
                 SELECT S.ssn, S.name, CS.grade, C.id as course_id, C.course_number as course_number, C.section, 
                 C.term, C.year
                 FROM Student S, course_students CS, Course C
-                WHERE S.ssn = CS.student_ssn
-                AND C.id = CS.course_id
-                AND C.course_number = '{course_id_input}' 
-                AND CS.grade >= {grade_input}
-                UNION 
-                SELECT S.ssn, S.name, CS.grade, C.id as course_id, C.course_number as course_number, C.section, 
-                C.term, C.year
-                FROM Non_diploma_student S, course_students CS, Course C
                 WHERE S.ssn = CS.student_ssn
                 AND C.id = CS.course_id
                 AND C.course_number = '{course_id_input}' 
@@ -160,6 +146,8 @@ if course_id_input and grade_trigger:
 "## Get students total credits in specific term"
 
 student_name_input = st.text_input("Enter student name")
+year_chosen = st.selectbox("Choose a year", ['2020', '2021', '2022'])
+term_chosen = st.selectbox("Choose a semester", ['Fall', 'Spring'])
 if student_name_input:
     try:
         sql = f"""
@@ -168,12 +156,64 @@ if student_name_input:
             WHERE S.ssn = CS.student_ssn
             AND C.id = CS.course_id
             AND S.name LIKE UPPER('%{student_name_input}%')
+            AND C.year = '{year_chosen}'
+            AND C.term = UPPER('{term_chosen}')
             GROUP BY S.ssn
             ORDER BY S.ssn ASC, S.name ASC; """
         result_3 = query_db(sql)
         st.dataframe(result_3)
     except:
         st.write("Sorry! Something went wrong with your query, please try again.")
+
+
+"## Count the total number of A students get from a professor"
+
+sql = f"""
+    SELECT concat(concat(P.ssn, ', '), P.name) as id
+    FROM professor P
+    ORDER BY P.ssn ASC;"""
+try:
+    professors = query_db(sql)["id"].tolist()
+    professor_chosen = st.selectbox("Choose a professor", professors).split(", ")[0]
+except:
+    st.write("Sorry! Something went wrong with your query, please try again.")
+
+if professor_chosen:
+    # try:
+    sql = f"""
+        SELECT S.ssn, S.name, Count(CS) as nums
+        FROM Student S JOIN course_students CS ON S.ssn = CS.student_ssn
+        WHERE CS.course_id = any (
+            SELECT C.id 
+            FROM Course C
+            WHERE professor_ssn = '{professor_chosen}')
+        AND CS.grade > 90
+        GROUP BY (S.ssn, S.name)
+        ORDER BY nums DESC, ssn ASC; """
+    result_4 = query_db(sql)
+    st.dataframe(result_4)
+    # except:
+    #     st.write("Sorry! Something went wrong with your query, please try again.")
+
+
+"## Get students who have job and take a least one course in current semester"
+
+year_chosen2 = st.selectbox("Choose a year", ['2022'])
+term_chosen2 = st.selectbox("Choose a semester", ['Fall'])
+try:
+    sql = f"""
+        SELECT S.ssn, S.name, SW.position, SW.type
+        FROM Student S, course_students CS, Course C, student_work SW
+        WHERE S.ssn = CS.student_ssn
+        AND C.id = CS.course_id
+        AND C.year = '{year_chosen2}'
+        AND C.term = UPPER('{term_chosen2}')
+        AND S.work_id = SW.id
+        ORDER BY S.ssn ASC, S.name ASC; """
+    result_5 = query_db(sql)
+    st.dataframe(result_5)
+except:
+    st.write("Sorry! Something went wrong with your query, please try again.")
 
 #
 # "## Query orders"
